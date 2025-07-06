@@ -4,13 +4,6 @@
 
 {% block styles %}
 <style>
-    .admin-page {
-        position: relative;
-        min-height: 100vh;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        overflow: hidden;
-    }
-
     .admin-video-bg {
         position: fixed;
         top: 0;
@@ -36,76 +29,6 @@
         z-index: 1;
         padding: 2rem 0;
     }
-
-    .admin-card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 15px;
-        color: white;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .admin-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .admin-header {
-        color: white;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        margin-bottom: 2rem;
-    }
-
-    .admin-btn {
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: white;
-        transition: all 0.3s ease;
-        border-radius: 10px;
-        padding: 0.5rem 1rem;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-    .admin-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-        color: white;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .table {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 15px;
-        overflow: hidden;
-    }
-
-    .table thead th {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        border: none;
-        font-weight: 600;
-    }
-
-    .table tbody td {
-        color: white;
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .table tbody tr:hover {
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .alert {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 15px;
-        color: white;
-    }
 </style>
 {% endblock %}
 
@@ -122,10 +45,10 @@
         <div class="row">
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="admin-header">
+                    <h1>
                         <i class="fas fa-clock me-3"></i>Pending Approval Requests
                     </h1>
-                    <a href="{{ url_for('admin.index') }}" class="admin-btn">
+                    <a href="{{ url_for('admin.index') }}" class="btn btn-primary">
                         <i class="fas fa-arrow-left"></i> Back to Dashboard
                     </a>
                 </div>
@@ -135,7 +58,7 @@
         {% if pending_users %}
         <div class="row">
             <div class="col-12">
-                <div class="admin-card">
+                <div class="card">
                     <div class="card-body">
                         <h5 class="text-center mb-4">
                             <i class="fas fa-hourglass-half me-2"></i>Users Awaiting Approval ({{ pending_users|length
@@ -161,7 +84,7 @@
                                             <form method="POST"
                                                 action="{{ url_for('admin.approve_user', user_id=user.id) }}"
                                                 class="d-inline">
-                                                <button type="submit" class="admin-btn btn btn-sm"
+                                                <button type="submit" class="btn btn-success btn-sm"
                                                     onclick="return confirm('Approve this user?')">
                                                     <i class="fas fa-check"></i> Approve
                                                 </button>
@@ -169,7 +92,7 @@
                                             <form method="POST"
                                                 action="{{ url_for('admin.reject_user', user_id=user.id) }}"
                                                 class="d-inline">
-                                                <button type="submit" class="admin-btn btn btn-sm"
+                                                <button type="submit" class="btn btn-danger btn-sm"
                                                     onclick="return confirm('Reject this user?')">
                                                     <i class="fas fa-times"></i> Reject
                                                 </button>
