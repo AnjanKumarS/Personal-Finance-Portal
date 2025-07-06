@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: finance-portal
+  labels:
+    name: finance-portal
+    app: personal-finance-portal 

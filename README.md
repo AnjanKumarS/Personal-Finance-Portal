@@ -48,8 +48,65 @@ A modern, feature-rich personal finance management application built with Flask,
 ### Prerequisites
 - Python 3.8 or higher
 - pip (Python package installer)
+- Docker (optional, for containerized deployment)
+- kubectl (optional, for Kubernetes deployment)
 
-### Installation
+### Option 1: Kubernetes Deployment (Production Ready)
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/Personal-Financial-Portal.git
+   cd Personal-Financial-Portal
+   ```
+
+2. **Build Docker image**
+   ```bash
+   docker build -t finance-portal:latest .
+   ```
+
+3. **Deploy to Kubernetes**
+   ```bash
+   # Linux/macOS
+   chmod +x k8s/deploy.sh
+   ./k8s/deploy.sh
+   
+   # Windows
+   k8s\deploy.bat
+   ```
+
+4. **Access the application**
+   ```bash
+   kubectl port-forward service/finance-portal-service 3000:80 -n finance-portal
+   ```
+   Then open http://localhost:3000 in your browser.
+
+### Option 2: Docker Deployment (Development)
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/Personal-Financial-Portal.git
+   cd Personal-Financial-Portal
+   ```
+
+2. **Run with Docker Compose**
+   ```bash
+   # On Windows
+   run-docker.bat
+   
+   # On macOS/Linux
+   chmod +x run-docker.sh
+   ./run-docker.sh
+   
+   # Or manually
+   docker-compose up --build
+   ```
+
+3. **Access the application**
+   - Open your browser and go to `http://localhost:5000`
+   - Admin credentials: `admin@financeportal.com` / `admin123`
+   - Start managing your finances!
+
+### Option 3: Local Development
 
 1. **Clone the repository**
    ```bash
@@ -199,6 +256,43 @@ Personal-Financial-Portal/
 - **Payment Status**: Track paid, upcoming, overdue bills
 - **Bill Reminders**: Never miss a payment
 
+## 🔧 Troubleshooting
+
+### Docker Issues
+
+**Problem**: "no such table: user" error
+- **Solution**: The database needs to be initialized. Run:
+  ```bash
+  docker-compose down
+  docker-compose up --build
+  ```
+
+**Problem**: Container won't start
+- **Solution**: Check if port 5000 is available. If not, change the port in `docker-compose.yml`:
+  ```yaml
+  ports:
+    - "5001:5000"  # Use port 5001 instead
+  ```
+
+**Problem**: Database not persisting
+- **Solution**: Ensure the volume mount is working. Check that `./instance:/app/instance` is properly mounted.
+
+### Local Development Issues
+
+**Problem**: Database migration errors
+- **Solution**: Delete the `migrations` folder and `instance/finance_portal.db`, then run:
+  ```bash
+   flask db init
+   flask db migrate -m "Initial migration"
+   flask db upgrade
+   ```
+
+**Problem**: Import errors
+- **Solution**: Ensure you're in the virtual environment and all dependencies are installed:
+  ```bash
+  pip install -r requirements.txt
+  ```
+
 ## 🔧 Configuration
 
 ### Environment Variables
@@ -226,8 +320,8 @@ DATABASE_URL=mysql://username:password@localhost/dbname
 
 ### Local Development
 ```bash
-python run.py
-```
+   python run.py
+   ```
 
 ### Production Deployment
 1. **Set environment variables**

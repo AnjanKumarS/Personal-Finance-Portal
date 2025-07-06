@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-portal
+  namespace: finance-portal
+  labels:
+    app: finance-portal
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: finance-portal
+  template:
+    metadata:
+      labels:
+        app: finance-portal
+    spec:
+      containers:
+      - name: finance-portal
+        image: finance-portal:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+          name: http
+        env:
+        - name: FLASK_APP
+          valueFrom:
+            configMapKeyRef:
+              name: finance-portal-config
+              key: FLASK_APP
+        - name: FLASK_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: finance-portal-config
+              key: FLASK_ENV
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: finance-portal-secret
+              key: SECRET_KEY
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: finance-portal-secret
+              key: DATABASE_URL
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: finance-portal-config
+              key: APP_NAME
+        - name: ITEMS_PER_PAGE
+          valueFrom:
+            configMapKeyRef:
+              name: finance-portal-config
+              key: ITEMS_PER_PAGE
+        - name: MAX_CONTENT_LENGTH
+          valueFrom:
+            configMapKeyRef:
+              name: finance-portal-config
+              key: MAX_CONTENT_LENGTH
+        volumeMounts:
+        - name: finance-portal-storage
+          mountPath: /app/instance
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: finance-portal-storage
+        persistentVolumeClaim:
+          claimName: finance-portal-pvc 

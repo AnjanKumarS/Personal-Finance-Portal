@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: finance-portal-service
+  namespace: finance-portal
+  labels:
+    app: finance-portal
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 5000
+    protocol: TCP
+    name: http
+  - port: 3000
+    targetPort: 5000
+    protocol: TCP
+    name: http-alt
+  selector:
+    app: finance-portal 
