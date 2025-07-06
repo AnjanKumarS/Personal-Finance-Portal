@@ -2,77 +2,199 @@
 
 {% block title %}Pending Requests{% endblock %}
 
+{% block styles %}
+<style>
+    .admin-page {
+        position: relative;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        overflow: hidden;
+    }
+
+    .admin-video-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -2;
+    }
+
+    .admin-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: -1;
+    }
+
+    .admin-content {
+        position: relative;
+        z-index: 1;
+        padding: 2rem 0;
+    }
+
+    .admin-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        color: white;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .admin-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .admin-header {
+        color: white;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        margin-bottom: 2rem;
+    }
+
+    .admin-btn {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .admin-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .table {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        font-weight: 600;
+    }
+
+    .table tbody td {
+        color: white;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .alert {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        color: white;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>Pending Approval Requests</h1>
-                <a href="{{ url_for('admin.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
-                </a>
+<!-- Video Background -->
+<video class="admin-video-bg" autoplay muted loop>
+    <source src="{{ url_for('static', filename='videos/video_preview_h264456.mp4') }}" type="video/mp4">
+    Your browser does not support the video tag.
+</video>
+<div class="admin-overlay"></div>
+
+<div class="admin-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="admin-header">
+                        <i class="fas fa-clock me-3"></i>Pending Approval Requests
+                    </h1>
+                    <a href="{{ url_for('admin.index') }}" class="admin-btn">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
 
-    {% if pending_users %}
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Users Awaiting Approval ({{ pending_users|length }})</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Registration Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for user in pending_users %}
-                                <tr>
-                                    <td>{{ user.username }}</td>
-                                    <td>{{ user.email }}</td>
-                                    <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                                    <td>
-                                        <form method="POST"
-                                            action="{{ url_for('admin.approve_user', user_id=user.id) }}"
-                                            class="d-inline">
-                                            <button type="submit" class="btn btn-success btn-sm"
-                                                onclick="return confirm('Approve this user?')">
-                                                <i class="fas fa-check"></i> Approve
-                                            </button>
-                                        </form>
-                                        <form method="POST" action="{{ url_for('admin.reject_user', user_id=user.id) }}"
-                                            class="d-inline">
-                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                onclick="return confirm('Reject this user?')">
-                                                <i class="fas fa-times"></i> Reject
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+        {% if pending_users %}
+        <div class="row">
+            <div class="col-12">
+                <div class="admin-card">
+                    <div class="card-body">
+                        <h5 class="text-center mb-4">
+                            <i class="fas fa-hourglass-half me-2"></i>Users Awaiting Approval ({{ pending_users|length
+                            }})
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Registration Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in pending_users %}
+                                    <tr>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            <form method="POST"
+                                                action="{{ url_for('admin.approve_user', user_id=user.id) }}"
+                                                class="d-inline">
+                                                <button type="submit" class="admin-btn btn btn-sm"
+                                                    onclick="return confirm('Approve this user?')">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+                                            </form>
+                                            <form method="POST"
+                                                action="{{ url_for('admin.reject_user', user_id=user.id) }}"
+                                                class="d-inline">
+                                                <button type="submit" class="admin-btn btn btn-sm"
+                                                    onclick="return confirm('Reject this user?')">
+                                                    <i class="fas fa-times"></i> Reject
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    {% else %}
-    <div class="row">
-        <div class="col-12">
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i> No pending approval requests at this time.
+        {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <h4>No Pending Requests</h4>
+                    <p>No pending approval requests at this time.</p>
+                </div>
             </div>
         </div>
+        {% endif %}
     </div>
-    {% endif %}
 </div>
 {% endblock %}

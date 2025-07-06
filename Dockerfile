@@ -8,11 +8,14 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy entire project
+# Copy the rest of the application
 COPY . .
 
-# Make startup script executable
-RUN chmod +x /app/start.sh
+# Normalize line endings and ensure script is executable
+RUN apt-get update && apt-get install -y dos2unix && \
+    dos2unix /app/start.sh && \
+    chmod +x /app/start.sh && \
+    apt-get remove -y dos2unix && apt-get autoremove -y
 
 # Set environment variables
 ENV FLASK_APP=run.py
@@ -23,5 +26,5 @@ ENV DATABASE_URL=sqlite:///finance_portal.db
 # Expose port
 EXPOSE 5000
 
-# Run the startup script
+# Start the application
 CMD ["/app/start.sh"]

@@ -11,7 +11,8 @@
     {% block styles %}{% endblock %}
 </head>
 
-<body class="{% if request.endpoint == 'dashboard.index' %}dashboard-page{% elif request.endpoint == 'expenses.index' %}expenses-page{% elif request.endpoint == 'budgets.index' %}budgets-page{% elif request.endpoint == 'investments.index' %}investments-page{% elif request.endpoint == 'bills.index' %}bills-page{% endif %}">
+<body
+    class="{% if request.endpoint == 'dashboard.index' %}dashboard-page{% elif request.endpoint == 'expenses.index' %}expenses-page{% elif request.endpoint == 'budgets.index' %}budgets-page{% elif request.endpoint == 'investments.index' %}investments-page{% elif request.endpoint == 'bills.index' %}bills-page{% elif 'admin.' in request.endpoint %}admin-page{% endif %}">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">{{ config.APP_NAME }}</a>
