@@ -43,6 +43,13 @@ A modern, feature-rich personal finance management application built with Flask,
 - **Admin-only Access** to sensitive features
 - **CSRF Protection** with Flask-WTF
 
+### 🚀 **CI/CD Pipeline**
+- **Automated Deployment** with Jenkins
+- **6-Stage Pipeline** for complete automation
+- **Kubernetes Integration** for scalable deployment
+- **Docker Containerization** for consistent environments
+- **Rollback Capability** for quick recovery
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -50,6 +57,7 @@ A modern, feature-rich personal finance management application built with Flask,
 - pip (Python package installer)
 - Docker (optional, for containerized deployment)
 - kubectl (optional, for Kubernetes deployment)
+- Jenkins (optional, for CI/CD pipeline)
 
 ### Option 1: Kubernetes Deployment (Production Ready)
 
@@ -150,6 +158,101 @@ A modern, feature-rich personal finance management application built with Flask,
    - Register as the first user (automatically becomes admin)
    - Start managing your finances!
 
+### Option 4: CI/CD Pipeline with Jenkins
+
+The project includes a comprehensive Jenkins CI/CD pipeline that automates the entire deployment process.
+
+#### Pipeline Stages
+
+The Jenkins pipeline consists of **6 automated stages**:
+
+1. **🔗 Clone Repository**
+   - Automatically clones the latest code from the main branch
+   - Ensures the pipeline works with the most recent changes
+
+2. **🏗️ Build Docker Image**
+   - Builds the application Docker image with tag `finance-portal:latest`
+   - Uses the Dockerfile in the project root
+
+3. **📦 Push to Local Docker (Optional)**
+   - Currently configured for local Docker usage
+   - Can be extended to push to Docker Hub or other registries
+
+4. **🚀 Deploy to Kubernetes**
+   - Applies all Kubernetes manifests in the `k8s/` directory:
+     - `namespace.yaml` - Creates the finance-portal namespace
+     - `configmap.yaml` - Application configuration
+     - `secret.yaml` - Sensitive data (passwords, keys)
+     - `persistent-volume.yaml` - Storage configuration
+     - `persistent-volume-claim.yaml` - Storage requests
+     - `deployment.yaml` - Application deployment
+     - `service.yaml` - Network service
+     - `ingress.yaml` - External access configuration
+
+5. **✅ Check Pod Status**
+   - Verifies that all pods are running successfully
+   - Provides deployment status feedback
+
+#### Setup Jenkins Pipeline
+
+1. **Install Jenkins**
+   ```bash
+   # On Ubuntu/Debian
+   sudo apt update
+   sudo apt install jenkins
+   
+   # On CentOS/RHEL
+   sudo yum install jenkins
+   
+   # On Windows
+   # Download from https://jenkins.io/download/
+   ```
+
+2. **Install Required Plugins**
+   - Docker Pipeline
+   - Kubernetes CLI
+   - Git Integration
+
+3. **Configure Jenkins**
+   - Set up Docker credentials
+   - Configure kubectl access
+   - Set up webhook for automatic triggers
+
+4. **Create Pipeline Job**
+   - Create a new Pipeline job in Jenkins
+   - Point to the Jenkinsfile in the repository
+   - Configure webhook for automatic builds on code changes
+
+#### Pipeline Configuration
+
+The pipeline uses the following environment variables:
+```groovy
+environment {
+    IMAGE_NAME = "finance-portal:latest"
+}
+```
+
+#### Automated Triggers
+
+- **Push to main branch** - Automatically triggers the pipeline
+- **Pull Request** - Can be configured to run tests before merge
+- **Manual trigger** - Available for on-demand deployments
+
+#### Monitoring
+
+- **Build History** - Track all pipeline runs
+- **Console Output** - Detailed logs for each stage
+- **Deployment Status** - Real-time pod status monitoring
+- **Rollback Capability** - Quick rollback to previous versions
+
+#### Benefits
+
+- **Automated Deployment** - No manual intervention required
+- **Consistent Environment** - Same deployment process every time
+- **Quick Rollbacks** - Easy to revert to previous versions
+- **Audit Trail** - Complete history of all deployments
+- **Scalability** - Easy to scale up or down based on demand
+
 ## 📁 Project Structure
 
 ```
@@ -191,10 +294,25 @@ Personal-Financial-Portal/
 │   │   ├── bills/            # Bill templates
 │   │   └── profile/          # Profile templates
 │   └── utils/                # Utility functions
+├── k8s/                     # Kubernetes deployment files
+│   ├── namespace.yaml        # Kubernetes namespace
+│   ├── configmap.yaml        # Application configuration
+│   ├── secret.yaml           # Sensitive data
+│   ├── persistent-volume.yaml # Storage configuration
+│   ├── persistent-volume-claim.yaml # Storage requests
+│   ├── deployment.yaml       # Application deployment
+│   ├── service.yaml          # Network service
+│   ├── ingress.yaml          # External access
+│   ├── deploy.sh             # Deployment script (Linux/macOS)
+│   ├── deploy.bat            # Deployment script (Windows)
+│   └── cleanup.sh            # Cleanup script
 ├── migrations/               # Database migrations
 ├── instance/                 # Instance-specific files
 ├── requirements.txt          # Python dependencies
 ├── run.py                   # Application entry point
+├── Dockerfile               # Docker container configuration
+├── docker-compose.yml       # Docker Compose configuration
+├── Jenkinsfile              # CI/CD pipeline configuration
 └── README.md               # This file
 ```
 
@@ -370,6 +488,10 @@ DATABASE_URL=mysql://username:password@localhost/dbname
 - **Database**: SQLite (development), PostgreSQL/MySQL (production)
 - **Styling**: CSS3 with Glass-morphism effects
 - **Charts**: Chart.js for data visualization
+- **Containerization**: Docker, Docker Compose
+- **Orchestration**: Kubernetes
+- **CI/CD**: Jenkins Pipeline
+- **Infrastructure**: kubectl, Docker Engine
 
 ## 🤝 Contributing
 
